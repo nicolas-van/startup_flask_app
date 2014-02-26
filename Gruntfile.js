@@ -6,7 +6,13 @@ module.exports = function(grunt) {
 
     var libjsfiles = [
         "bower_components/underscore/underscore.js",
-        "bower_components/jquery/jquery.js",
+        "bower_components/jquery/dist/jquery.js",
+        "bower_components/uri.js/src/URI.js",
+        "bower_components/momentjs/moment.js",
+        "bower_components/httpinvoke/httpinvoke-browser.js",
+        "bower_components/q/q.js",
+        "bower_components/ring/ring.js",
+        "bower_components/spear/spear.js",
     ];
     var myjsfiles = [
         "src/js/app.js",
