@@ -4,6 +4,10 @@ module.exports = function(grunt) {
 
     var _ = require("underscore");
 
+    var shivfiles = [
+        "bower_components/respond/dest/respond.src.js",
+        "bower_components/html5shiv/dist/html5shiv.js",
+    ];
     var libjsfiles = [
         "bower_components/underscore/underscore.js",
         "bower_components/jquery/dist/jquery.js",
@@ -48,13 +52,9 @@ module.exports = function(grunt) {
                 files: "static/css/**.less",
                 tasks: ['less']
             },
-            cssmin: {
-                files: cssfiles,
-                tasks: ['cssmin'],
-            },
-            js: {
-                files: jsfiles,
-                tasks: ['uglify'],
+            jiko: {
+                files: "src/client_templates/**.html",
+                tasks: ['shell:jiko'],
             },
         },
         cssmin: {
@@ -73,11 +73,16 @@ module.exports = function(grunt) {
             }
         },
         uglify: {
+            shiv: {
+                files: {
+                    'static/shiv.js': shivfiles,
+                }
+            },
             dist: {
                 files: {
                     'static/app.min.js': jsfiles,
                 }
-            }
+            },
         },
         copy: {
             main: {
@@ -112,9 +117,9 @@ module.exports = function(grunt) {
         grunt.file.write("filesconfig.json", JSON.stringify(obj, undefined, "    "), {encoding: "utf8"});
     });
 
-    grunt.registerTask('gen', ['shell:jiko', 'jshint', 'less', 'copy']);
+    grunt.registerTask('gen', ['uglify:shiv', 'shell:jiko', 'jshint', 'less', 'copy']);
     grunt.registerTask('dev', ['gen', 'writeconfig:dev']);
-    grunt.registerTask('dist', ['gen', 'uglify', 'cssmin', 'writeconfig:dist', "clean:tmp"]);
+    grunt.registerTask('dist', ['gen', 'uglify:dist', 'cssmin', 'writeconfig:dist', "clean:tmp"]);
     grunt.registerTask('watcher', ['dev', 'watch']);
 
     grunt.registerTask('default', ['dev']);

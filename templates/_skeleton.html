@@ -1,0 +1,40 @@
+<!doctype html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ description }}">
+    <meta name="author" content="{{ author }}">
+
+    {% for file in files_config["cssfiles"] %}
+    <link rel="stylesheet" href="/{{ file }}">
+    {% endfor %}
+
+    <!--[if IE]>
+    <script src="/static/shiv.js"></script>
+    <![endif]-->
+
+    {% if not js_after_html %}
+    {% for file in files_config["jsfiles"] %}
+    <script src="/{{ file }}"></script>
+    {% endfor %}
+    {% endif %}
+
+    {% block head %}
+    {% endblock %}
+</head>
+<body style="">
+
+    {% block body %}
+    {% endblock %}
+  
+    {% if js_after_html %}
+    {% for file in files_config["jsfiles"] %}
+    <script src="/{{ file }}"></script>
+    {% endfor %}
+    {% endif %}
+
+</body>
+</html>
