@@ -25,27 +25,7 @@ for s in files_config["static_folders"]:
 def main():
     return flask.render_template("index.html", files_config=files_config)
 
-class SjohFlask(object):
-    def __init__(self, app):
-        self.app = app
-        self.json_communicator = sjoh.JsonCommunicator()
-
-    def add_url_rule_for_json(self, rule, endpoint=None, view_func=None, *args, **kwargs):
-        def nfunc():
-            return self.json_communicator.receive(flask.request, view_func)
-        if view_func:
-            nfunc.__name__ = view_func.__name__
-            nfunc.__module__ = view_func.__module__
-        return self.app.add_url_rule(rule, endpoint, nfunc, *args, methods=["POST"], **kwargs)
-
-    def json(self, rule, **options):
-        def decorator(f):
-            endpoint = options.pop('endpoint', None)
-            self.add_url_rule_for_json(rule, endpoint, f, **options)
-            return f
-        return decorator
-
-sjoh_app = SjohFlask(app)
+sjoh_app = sjoh.SjohFlask(app)
 
 @sjoh_app.json("/hello")
 def hello():
