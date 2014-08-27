@@ -14,9 +14,11 @@ module.exports = function(grunt) {
         "bower_components/uri.js/src/URI.js",
         "bower_components/momentjs/moment.js",
         "bower_components/httpinvoke/httpinvoke-browser.js",
-        "bower_components/q/q.js",
+        "bower_components/bluebird/js/browser/bluebird.js",
         "bower_components/ring/ring.js",
         "bower_components/spear/spear.js",
+        "bower_components/bootstrap/dist/js/bootstrap.js",
+        "bower_components/sjoh/sjoh.js",
     ];
     var templatesfiles = [
         "src/client_templates/templates.html",
