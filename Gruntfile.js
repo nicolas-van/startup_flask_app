@@ -38,6 +38,9 @@ module.exports = function(grunt) {
     grunt.initConfig({
         jshint: {
             files: myjsfiles,
+            options: {
+                sub: true,
+            },
         },
         less: {
             dev: {
