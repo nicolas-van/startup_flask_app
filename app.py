@@ -3,7 +3,8 @@ import flask
 import os
 import os.path
 import json
-import sjoh
+import sjoh.flask
+import logging
 
 app = flask.Flask(__name__, static_folder=None)
 # load configuration about files and folders
@@ -25,11 +26,12 @@ for s in files_config["static_folders"]:
 def main():
     return flask.render_template("index.html", files_config=files_config)
 
-sjoh_app = sjoh.SjohFlask(app)
+sjoh_app = sjoh.flask.SjohFlask(app)
 
 @sjoh_app.json("/hello")
 def hello():
     return "Hello"
 
 if __name__ == "__main__":
+    logging.basicConfig(level="INFO")
     app.run()
