@@ -1,5 +1,6 @@
 
 (function() {
+"use strict";
     window.app = {};
 
     app.init = function() {

@@ -8,32 +8,26 @@
     <meta name="description" content="{{ description }}">
     <meta name="author" content="{{ author }}">
 
-    {% for file in files_config["cssfiles"] %}
-    <link rel="stylesheet" href="/{{ file }}">
-    {% endfor %}
+    <link rel="stylesheet" href="/static/style.css">
 
     <!--[if IE]>
     <script src="/static/shiv.js"></script>
     <![endif]-->
 
     {% if not js_after_html %}
-    {% for file in files_config["jsfiles"] %}
-    <script src="/{{ file }}"></script>
-    {% endfor %}
+    <script src="/static/all.js"></script>
     {% endif %}
 
     {% block head %}
     {% endblock %}
 </head>
-<body style="">
+<body>
 
     {% block body %}
     {% endblock %}
   
     {% if js_after_html %}
-    {% for file in files_config["jsfiles"] %}
-    <script src="/{{ file }}"></script>
-    {% endfor %}
+    <script src="/static/all.js"></script>
     {% endif %}
 
 </body>

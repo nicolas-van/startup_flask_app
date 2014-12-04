@@ -1,8 +1,10 @@
 (function() {
+"use strict";
 var declare = function() {
 return (function() {
     var __ematches = {'&': '&amp;','<': '&lt;','>': '&gt;','"': '&quot;',"'": '&#x27;','/': '&#x2F;'};
-    var escape_function = function(s) {return ('' + (!s ? '' : s)).replace(/[&<>"'/]/g, function(a){return __ematches[a];});};
+    var escapeFunction = function(s) {return ('' + (!s ? '' : s))
+        .replace(/[&<>"'/]/g, function(a){return __ematches[a];});};
     var exports = {};
     var sample = function(a) {
         var o = '';
@@ -20,6 +22,6 @@ if (typeof(define) !== 'undefined') {
 } else if (typeof(exports) !== 'undefined') {
     module.exports = declare();
 } else {
-    templates = declare();
+    window.templates = declare();
 }
 })();

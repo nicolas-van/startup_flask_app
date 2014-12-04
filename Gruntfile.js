@@ -42,6 +42,14 @@ module.exports = function(grunt) {
             files: myjsfiles,
             options: {
                 sub: true,
+                eqeqeq: true, // no == or !=
+                immed: true, // forces () around directly called functions
+                forin: true, // makes it harder to use for in
+                latedef: "nofunc", // makes it impossible to use a variable before it is declared
+                newcap: true, // force capitalized constructors
+                strict: true, // enforce strict mode
+                trailing: true, // trailing whitespaces are ugly
+                camelcase: true, // force camelCase
             },
         },
         less: {
@@ -55,7 +63,7 @@ module.exports = function(grunt) {
         watch: {
             less: {
                 files: "static/css/**.less",
-                tasks: ['less']
+                tasks: ['less'],
             },
             jiko: {
                 files: "src/client_templates/**.html",
@@ -65,7 +73,7 @@ module.exports = function(grunt) {
         cssmin: {
             dist: {
                 files: {
-                    'static/style.min.css': cssfiles,
+                    'static/style.css': cssfiles,
                 }
             },
         },
@@ -75,6 +83,9 @@ module.exports = function(grunt) {
             },
             all: {
                 src: ["static", 'filesconfig.json'],
+            },
+            tmpjs: {
+                src: ['tmp.js'],
             }
         },
         uglify: {
@@ -85,7 +96,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    'static/app.min.js': jsfiles,
+                    'static/all.js': jsfiles,
                 }
             },
         },
@@ -101,6 +112,51 @@ module.exports = function(grunt) {
                 command: "node_modules/jiko/jiko_cli.js compile src/client_templates/templates.html",
             },
         },
+        "file-creator": {
+            dev_tmpjs: {
+                files: [{
+                    file: "tmp.js",
+                    method: function(fs, fd, done) {
+                        fs.writeSync(fd, "window['$'] = head.ready;\n" +
+                        "head.load.apply(head, " + JSON.stringify(cssfiles.concat(jsfiles)) + ");\n");
+                        done();
+                    }
+                }],
+            },
+            dev_css: {
+                files: [{
+                    file: "static/style.css",
+                    method: function(fs, fd, done) {
+                        fs.writeSync(fd, "");
+                        done();
+                    }
+                }],
+            },
+            dev_config: {
+                files: [{
+                    file: "filesconfig.json",
+                    method: function(fs, fd, done) {
+                        fs.writeSync(fd, JSON.stringify({"static_folders": ["bower_components", "src", "static"]}));
+                        done();
+                    }
+                }],
+            },
+            dist_config: {
+                files: [{
+                    file: "filesconfig.json",
+                    method: function(fs, fd, done) {
+                        fs.writeSync(fd, JSON.stringify({"static_folders": ["static"]}));
+                        done();
+                    }
+                }],
+            },
+        },
+        concat: {
+            dev: {
+                src: ['bower_components/headjs/dist/1.0.0/head.load.js', 'tmp.js'],
+                dest: 'static/all.js',
+            },
+        },
     });
 
     grunt.loadNpmTasks('grunt-contrib-less');
@@ -111,20 +167,12 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-shell');
-
-    grunt.registerTask('writeconfig', function(type) {
-        var isdev = type === "dev"; // if not dev, it is dist
-        var obj = {
-            "jsfiles": isdev ? jsfiles : ['static/app.min.js'],
-            "cssfiles": isdev ? cssfiles : ['static/style.min.css'],
-            "static_folders": ["static"].concat(isdev ? ["src", "bower_components"] : []),
-        };
-        grunt.file.write("filesconfig.json", JSON.stringify(obj, undefined, "    "), {encoding: "utf8"});
-    });
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-file-creator');
 
     grunt.registerTask('gen', ['uglify:shiv', 'shell:jiko', 'jshint', 'less', 'copy']);
-    grunt.registerTask('dev', ['gen', 'writeconfig:dev']);
-    grunt.registerTask('dist', ['gen', 'uglify:dist', 'cssmin', 'writeconfig:dist', "clean:tmp"]);
+    grunt.registerTask('dev', ['gen', 'file-creator:dev_tmpjs', 'file-creator:dev_css', "concat:dev", "clean:tmpjs", 'file-creator:dev_config']);
+    grunt.registerTask('dist', ['gen', 'uglify:dist', 'cssmin', "clean:tmp", 'file-creator:dist_config']);
     grunt.registerTask('watcher', ['dev', 'watch']);
 
     grunt.registerTask('default', ['dev']);

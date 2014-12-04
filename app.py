@@ -1,3 +1,4 @@
+#! /usr/bin/python
 
 import flask
 import os
@@ -7,6 +8,7 @@ import sjoh.flask
 import logging
 
 app = flask.Flask(__name__, static_folder=None)
+
 # load configuration about files and folders
 folder = os.path.dirname(__file__)
 fc = os.path.join(folder, "filesconfig.json")
@@ -24,7 +26,7 @@ for s in files_config["static_folders"]:
 
 @app.route("/")
 def main():
-    return flask.render_template("index.html", files_config=files_config)
+    return flask.render_template("index.html")
 
 sjoh_app = sjoh.flask.SjohFlask(app)
 

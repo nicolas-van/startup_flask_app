@@ -17,5 +17,8 @@
     "html5shiv": "~3.7.0",
     "sjoh": "~1.0.4",
     "underscore": "~1.7.0"
+  },
+  "devDependencies": {
+    "headjs": "~1.0.3"
   }
 }
