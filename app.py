@@ -1,11 +1,14 @@
 #! /usr/bin/python
 
+from __future__ import unicode_literals, print_function, absolute_import
+
 import flask
 import os
 import os.path
 import json
 import sjoh.flask
 import logging
+from flask.ext.babel import Babel
 
 app = flask.Flask(__name__, static_folder=None)
 
@@ -23,6 +26,8 @@ for s in files_config["static_folders"]:
         return static_route
     route = "/" + s + "/<path:path>"
     app.add_url_rule(route, "static:"+s, gen_fct(s))
+
+babel = Babel(app)
 
 @app.route("/")
 def main():
