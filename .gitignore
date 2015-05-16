@@ -3,3 +3,4 @@ bower_components/
 filesconfig.json
 static/
 src/css/*.css
+src/client_templates/*.js
